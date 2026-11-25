@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datos>
+  <registro>
+    <Variable1>Nombre</Variable1>
+    <Valor1>ODS 17.18.1.1. Indicador de Rendimiento Estadístico</Valor1>
+    <PERIODO>2025</PERIODO>
+    <VALOR>96.5</VALOR>
+  </registro>
+  <registro>
+    <Variable1>Nombre</Variable1>
+    <Valor1>ODS 17.18.1.1. Indicador de Rendimiento Estadístico</Valor1>
+    <PERIODO>2015</PERIODO>
+    <VALOR>96.5</VALOR>
+  </registro>
+</datos>

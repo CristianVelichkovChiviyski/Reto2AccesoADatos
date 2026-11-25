@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:ex="http://ejemplo.org/">
+  <ex:Registro rdf:about="http://ejemplo.org/registro/1">
+    <ex:Variable1>Nombre</ex:Variable1>
+    <ex:Valor1>ODS 17.18.1.1. Indicador de Rendimiento Estadístico</ex:Valor1>
+    <ex:PERIODO rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2025</ex:PERIODO>
+    <ex:VALOR rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">96.5</ex:VALOR>
+  </ex:Registro>
+  <ex:Registro rdf:about="http://ejemplo.org/registro/2">
+    <ex:Variable1>Nombre</ex:Variable1>
+    <ex:Valor1>ODS 17.18.1.1. Indicador de Rendimiento Estadístico</ex:Valor1>
+    <ex:PERIODO rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2015</ex:PERIODO>
+    <ex:VALOR rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">96.5</ex:VALOR>
+  </ex:Registro>
+</rdf:RDF>
