@@ -70,12 +70,10 @@
         </td>
         <td>
           <table>
-            <tr id="fila-dato1"><td id="label-dato1">DATO1 (año):</td><td><input type="text" name="dato1"></td></tr>
-            <tr id="fila-dato2"><td id="label-dato2">DATO2 (sector):</td><td><input type="text" name="dato2"></td></tr>
-            <tr id="fila-dato3"><td id="label-dato3">DATO3 (gas):</td><td><input type="text" name="dato3"></td></tr>
-            <tr id="fila-dato4"><td id="label-dato4">DATO4 (toneladas):</td><td><input type="text" name="dato4"></td></tr>
-            <tr id="fila-dato5"><td id="label-dato5">DATO5 (municipio):</td><td><textarea name="dato5" rows="2" cols="18"></textarea></td></tr>
-            <tr id="fila-dato6"><td id="label-dato6">DATO6 (observaciones):</td><td><input type="text" name="dato6"></td></tr>
+            <tr><td>DATO1 (Variable1):</td><td><input type="text" name="dato1"></td></tr>
+            <tr><td>DATO2 (Valor1):</td><td><textarea name="dato2" rows="2" cols="30"></textarea></td></tr>
+            <tr><td>DATO3 (PERIODO):</td><td><input type="text" name="dato3"></td></tr>
+            <tr><td>DATO4 (VALOR):</td><td><input type="text" name="dato4"></td></tr>
             <tr><td colspan="2" class="aviso">(*) Los campos no pueden estar vacíos al escribir</td></tr>
           </table>
         </td>

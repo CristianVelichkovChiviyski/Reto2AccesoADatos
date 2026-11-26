@@ -42,9 +42,9 @@ public class ServletFich extends HttpServlet {
             }
 
             if (formato.equals("XML")) {
-                String ruta = getServletContext().getRealPath("/datos/datos.xml");
+                String ruta = getServletContext().getRealPath("/datos/archivodatos.xml");
                 if (ruta == null) {
-                    throw new Exception("No se pudo localizar el fichero datos.xml en el servidor");
+                    throw new Exception("No se pudo localizar el fichero archivodatos.xml en el servidor");
                 }
 
                 if (accion.equals("lectura")) {
@@ -56,7 +56,7 @@ public class ServletFich extends HttpServlet {
 
                 } else if (accion.equals("escritura")) {
                     // ESCRITURA con SAX -> se abre el fichero para ver el registro nuevo
-                    String[] valores = new String[6];
+                    String[] valores = new String[4];  // Variable1, Valor1, PERIODO, VALOR
                     for (int i = 0; i < valores.length; i++) {
                         String v = request.getParameter("dato" + (i + 1));
                         if (v == null || v.trim().isEmpty()) {
