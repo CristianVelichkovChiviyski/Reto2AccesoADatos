@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import entity.FicheroJSON;
 import entity.FicheroXML;
+import entity.FicheroRDF;
 import entity.ManejadorGenerico;
 
 /*
@@ -105,8 +106,35 @@ public class ServletFich extends HttpServlet {
                 } else {
                     throw new Exception("Accion no valida: " + accion);
                 }
+            }else if(formato.equals("RDF")){
+            	String ruta = getServletContext().getRealPath("/datos/archivodatos.rdf");
+            	if(ruta == null) {
+            		throw new Exception("No se pudo localizar el fichero archivodatos.rdf en el servidor");
+            	}
+            	
+            	FicheroRDF fichRDF = new FicheroRDF(ruta);
+            	if(accion.equals("lectura")) {
+            	    FicheroRDF.ResultadoRDF res = fichRDF.leer();
+            	    request.setAttribute("cabeceras", res.getCabeceras());
+            	    request.setAttribute("filas", res.getFilas());
+            	    request.getRequestDispatcher("AccesoDatosA.jsp").forward(request, response);
+
+            	} else if (accion.equals("escritura")) {
+            		String[] datos = new String[4];
+            	    for (int i = 0; i < 4; i++) {
+            	        datos[i] = request.getParameter("dato" + (i + 1));
+            	    }
+            	    
+            	    fichRDF.escribir(datos);
+
+            	    response.setContentType("text/xml;charset=UTF-8"); // lo muestra en pantalla
+            	    java.nio.file.Files.copy(java.nio.file.Paths.get(ruta), response.getOutputStream());
+
+            	} else {
+            	    throw new Exception("Accion no valida: " + accion);
+            	}
             }else {
-                // Aqui el resto del grupo anadira CSV, XLS, RDF...
+                // Aqui el resto del grupo anadira CSV, XLS...
                 throw new Exception("Formato no soportado todavia: " + formato);
             }
 

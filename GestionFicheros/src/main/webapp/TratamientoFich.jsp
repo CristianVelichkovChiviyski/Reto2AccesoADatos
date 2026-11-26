@@ -24,7 +24,8 @@
                 <select name="formato" id="formato">
                   <option value="XML">XML</option>
                   <option value="JSON">JSON</option>
-                  <!-- Resto del grupo: XLS, CSV, RDF... -->
+                  <option value="RDF">RDF</option>
+                  <!-- Resto del grupo: XLS, CSV... -->
                 </select>
               </td>
             </tr>
