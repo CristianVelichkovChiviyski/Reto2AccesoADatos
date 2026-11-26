@@ -9,6 +9,34 @@
   td { vertical-align: top; padding: 2px 6px; }
   .aviso { color: red; font-weight: bold; }
 </style>
+<script>
+  function actualizarCampos() {
+    const formato = document.getElementById("formato").value;
+
+    // Definimos las etiquetas de cada formato (null = se oculta esa fila)
+    const etiquetasPorFormato = {
+      "XML":  ["DATO1 (año):", "DATO2 (sector):", "DATO3 (gas):", "DATO4 (toneladas):", "DATO5 (municipio):", "DATO6 (observaciones):"],
+      "JSON": ["DATO1 (Nombre):", "DATO2 (ODS):", "DATO3 (Periodo):", "DATO4 (Valor):", null, null]
+    };
+
+    const etiquetas = etiquetasPorFormato[formato] || ["DATO1:", "DATO2:", "DATO3:", "DATO4:", "DATO5:", "DATO6:"];
+
+    for (let i = 1; i <= 6; i++) {
+      const fila = document.getElementById("fila-dato" + i);
+      const label = document.getElementById("label-dato" + i);
+      const texto = etiquetas[i - 1];
+
+      if (texto === null) {
+        fila.style.display = "none";
+      } else {
+        fila.style.display = "";
+        label.textContent = texto;
+      }
+    }
+  }
+
+  window.onload = actualizarCampos;
+</script>
 </head>
 <body>
   <h2>TRATAMIENTO FICHEROS</h2>
@@ -21,9 +49,10 @@
             <tr>
               <td>Formato del fichero:</td>
               <td>
-                <select name="formato">
+                <select name="formato" id="formato" onchange="actualizarCampos()">
                   <option value="XML">XML</option>
-                  <!-- Resto del grupo: XLS, CSV, JSON, RDF... -->
+                  <option value="JSON">JSON</option>
+                  <!-- Resto del grupo: XLS, CSV, RDF... -->
                 </select>
               </td>
             </tr>
@@ -41,12 +70,12 @@
         </td>
         <td>
           <table>
-            <tr><td>DATO1 (año):</td><td><input type="text" name="dato1"></td></tr>
-            <tr><td>DATO2 (sector):</td><td><input type="text" name="dato2"></td></tr>
-            <tr><td>DATO3 (gas):</td><td><input type="text" name="dato3"></td></tr>
-            <tr><td>DATO4 (toneladas):</td><td><input type="text" name="dato4"></td></tr>
-            <tr><td>DATO5 (municipio):</td><td><textarea name="dato5" rows="2" cols="18"></textarea></td></tr>
-            <tr><td>DATO6 (observaciones):</td><td><input type="text" name="dato6"></td></tr>
+            <tr id="fila-dato1"><td id="label-dato1">DATO1 (año):</td><td><input type="text" name="dato1"></td></tr>
+            <tr id="fila-dato2"><td id="label-dato2">DATO2 (sector):</td><td><input type="text" name="dato2"></td></tr>
+            <tr id="fila-dato3"><td id="label-dato3">DATO3 (gas):</td><td><input type="text" name="dato3"></td></tr>
+            <tr id="fila-dato4"><td id="label-dato4">DATO4 (toneladas):</td><td><input type="text" name="dato4"></td></tr>
+            <tr id="fila-dato5"><td id="label-dato5">DATO5 (municipio):</td><td><textarea name="dato5" rows="2" cols="18"></textarea></td></tr>
+            <tr id="fila-dato6"><td id="label-dato6">DATO6 (observaciones):</td><td><input type="text" name="dato6"></td></tr>
             <tr><td colspan="2" class="aviso">(*) Los campos no pueden estar vacíos al escribir</td></tr>
           </table>
         </td>
