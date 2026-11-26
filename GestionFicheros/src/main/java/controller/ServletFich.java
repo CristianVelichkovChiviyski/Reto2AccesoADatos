@@ -7,7 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import entity.FicheroJSON;
 import entity.FicheroXML;
 import entity.ManejadorGenerico;
 
@@ -73,8 +73,40 @@ public class ServletFich extends HttpServlet {
                     throw new Exception("Accion no valida: " + accion);
                 }
 
-            } else {
-                // Aqui el resto del grupo anadira CSV, JSON, XLS, RDF...
+            } else if (formato.equals("JSON")) {
+                String ruta = getServletContext().getRealPath("/datos/archivodatos.json");
+                if (ruta == null) {
+                    throw new Exception("No se pudo localizar el fichero archivodatos.json en el servidor");
+                }
+
+                if (accion.equals("lectura")) {
+                	// LECTURA con JSON -> enviamos a la tabla de AccesoDatosA.jsp
+                    FicheroJSON.ResultadoJSON res = FicheroJSON.leer(ruta);
+                    request.setAttribute("cabeceras", res.getCabeceras());
+                    request.setAttribute("filas", res.getFilas());
+                    request.getRequestDispatcher("AccesoDatosA.jsp").forward(request, response);
+
+                } else if (accion.equals("escritura")) {
+                	// ESCRITURA con JSON -> validamos los 4 campos del JSON, guardamos y mostramos el fichero
+                    String[] valores = new String[4];
+                    for (int i = 0; i < valores.length; i++) {
+                        String v = request.getParameter("dato" + (i + 1));
+                        if (v == null || v.trim().isEmpty()) {
+                            throw new Exception("Error de validacion: el campo DATO" + (i + 1)
+                                    + " esta vacio. Para JSON debes rellenar de DATO1 a DATO4");
+                        }
+                        valores[i] = v.trim();
+                    }
+                    FicheroJSON.escribir(ruta, valores);
+                    // Devolvemos el JSON actualizado directamente en el navegador
+                    response.setContentType("application/json;charset=UTF-8");
+                    java.nio.file.Files.copy(java.nio.file.Paths.get(ruta), response.getOutputStream());
+
+                } else {
+                    throw new Exception("Accion no valida: " + accion);
+                }
+            }else {
+                // Aqui el resto del grupo anadira CSV, XLS, RDF...
                 throw new Exception("Formato no soportado todavia: " + formato);
             }
 
