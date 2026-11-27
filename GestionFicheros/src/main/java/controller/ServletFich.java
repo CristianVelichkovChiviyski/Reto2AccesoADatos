@@ -7,14 +7,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import entity.FicheroCSV;
 import entity.FicheroJSON;
 import entity.FicheroXML;
 import entity.FicheroRDF;
 import entity.ManejadorGenerico;
 
 /*
- * NOTA: si usas Tomcat 10 o superior, cambia "javax.servlet" por "jakarta.servlet".
- *
  * Flujo: TratamientoFich.jsp -> ServletFich -> AccesoDatosA.jsp (o Error.jsp si falla)
  */
 @WebServlet("/ServletFich")
@@ -57,7 +56,7 @@ public class ServletFich extends HttpServlet {
 
                 } else if (accion.equals("escritura")) {
                     // ESCRITURA con SAX -> se abre el fichero para ver el registro nuevo
-                    String[] valores = new String[4];  // Variable1, Valor1, PERIODO, VALOR
+                    String[] valores = new String[4]; // Variable1, Valor1, PERIODO, VALOR
                     for (int i = 0; i < valores.length; i++) {
                         String v = request.getParameter("dato" + (i + 1));
                         if (v == null || v.trim().isEmpty()) {
@@ -81,14 +80,14 @@ public class ServletFich extends HttpServlet {
                 }
 
                 if (accion.equals("lectura")) {
-                	// LECTURA con JSON -> enviamos a la tabla de AccesoDatosA.jsp
+                    // LECTURA con JSON -> enviamos a la tabla de AccesoDatosA.jsp
                     FicheroJSON.ResultadoJSON res = FicheroJSON.leer(ruta);
                     request.setAttribute("cabeceras", res.getCabeceras());
                     request.setAttribute("filas", res.getFilas());
                     request.getRequestDispatcher("AccesoDatosA.jsp").forward(request, response);
 
                 } else if (accion.equals("escritura")) {
-                	// ESCRITURA con JSON -> validamos los 4 campos del JSON, guardamos y mostramos el fichero
+                    // ESCRITURA con JSON -> validamos los 4 campos del JSON, guardamos y mostramos el fichero
                     String[] valores = new String[4];
                     for (int i = 0; i < valores.length; i++) {
                         String v = request.getParameter("dato" + (i + 1));
@@ -99,42 +98,78 @@ public class ServletFich extends HttpServlet {
                         valores[i] = v.trim();
                     }
                     FicheroJSON.escribir(ruta, valores);
-                    // Devolvemos el JSON actualizado directamente en el navegador
                     response.setContentType("application/json;charset=UTF-8");
                     java.nio.file.Files.copy(java.nio.file.Paths.get(ruta), response.getOutputStream());
 
                 } else {
                     throw new Exception("Accion no valida: " + accion);
                 }
-            }else if(formato.equals("RDF")){
-            	String ruta = getServletContext().getRealPath("/datos/archivodatos.rdf");
-            	if(ruta == null) {
-            		throw new Exception("No se pudo localizar el fichero archivodatos.rdf en el servidor");
-            	}
-            	
-            	FicheroRDF fichRDF = new FicheroRDF(ruta);
-            	if(accion.equals("lectura")) {
-            	    FicheroRDF.ResultadoRDF res = fichRDF.leer();
-            	    request.setAttribute("cabeceras", res.getCabeceras());
-            	    request.setAttribute("filas", res.getFilas());
-            	    request.getRequestDispatcher("AccesoDatosA.jsp").forward(request, response);
 
-            	} else if (accion.equals("escritura")) {
-            		String[] datos = new String[4];
-            	    for (int i = 0; i < 4; i++) {
-            	        datos[i] = request.getParameter("dato" + (i + 1));
-            	    }
-            	    
-            	    fichRDF.escribir(datos);
+            } else if (formato.equals("RDF")) {
+                String ruta = getServletContext().getRealPath("/datos/archivodatos.rdf");
+                if (ruta == null) {
+                    throw new Exception("No se pudo localizar el fichero archivodatos.rdf en el servidor");
+                }
 
-            	    response.setContentType("text/xml;charset=UTF-8"); // lo muestra en pantalla
-            	    java.nio.file.Files.copy(java.nio.file.Paths.get(ruta), response.getOutputStream());
+                FicheroRDF fichRDF = new FicheroRDF(ruta);
+                if (accion.equals("lectura")) {
+                    FicheroRDF.ResultadoRDF res = fichRDF.leer();
+                    request.setAttribute("cabeceras", res.getCabeceras());
+                    request.setAttribute("filas", res.getFilas());
+                    request.getRequestDispatcher("AccesoDatosA.jsp").forward(request, response);
 
-            	} else {
-            	    throw new Exception("Accion no valida: " + accion);
-            	}
-            }else {
-                // Aqui el resto del grupo anadira CSV, XLS...
+                } else if (accion.equals("escritura")) {
+                    String[] datos = new String[4];
+                    for (int i = 0; i < 4; i++) {
+                        datos[i] = request.getParameter("dato" + (i + 1));
+                    }
+
+                    fichRDF.escribir(datos);
+
+                    response.setContentType("text/xml;charset=UTF-8");
+                    java.nio.file.Files.copy(java.nio.file.Paths.get(ruta), response.getOutputStream());
+
+                } else {
+                    throw new Exception("Accion no valida: " + accion);
+                }
+
+            } else if (formato.equals("CSV")) {
+                String ruta = getServletContext().getRealPath("/datos/archivodatos.csv");
+                if (ruta == null) {
+                    throw new Exception("No se pudo localizar el fichero archivodatos.csv en el servidor");
+                }
+
+                if (accion.equals("lectura")) {
+                    // LECTURA CSV -> tabla en AccesoDatosA.jsp
+                    FicheroCSV.ResultadoCSV res = FicheroCSV.leer(ruta);
+                    request.setAttribute("cabeceras", res.getCabeceras());
+                    request.setAttribute("filas", res.getFilas());
+                    request.getRequestDispatcher("AccesoDatosA.jsp").forward(request, response);
+
+                } else if (accion.equals("escritura")) {
+                    // ESCRITURA CSV -> validamos los 4 campos (Variable1, Valor1, PERIODO, VALOR)
+                    String[] valores = new String[4];
+                    for (int i = 0; i < valores.length; i++) {
+                        String v = request.getParameter("dato" + (i + 1));
+                        if (v == null || v.trim().isEmpty()) {
+                            throw new Exception("Error de validacion: el campo DATO" + (i + 1)
+                                    + " esta vacio. Para CSV debes rellenar de DATO1 a DATO4");
+                        }
+                        valores[i] = v.trim();
+                    }
+
+                    FicheroCSV.escribir(ruta, valores);
+
+                    // Devolvemos el CSV actualizado en pantalla
+                    response.setContentType("text/plain;charset=UTF-8");
+                    java.nio.file.Files.copy(java.nio.file.Paths.get(ruta), response.getOutputStream());
+
+                } else {
+                    throw new Exception("Accion no valida: " + accion);
+                }
+
+            } else {
+                // Aqui el resto del grupo anadira XLS...
                 throw new Exception("Formato no soportado todavia: " + formato);
             }
 

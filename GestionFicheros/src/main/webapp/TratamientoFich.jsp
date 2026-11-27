@@ -25,7 +25,8 @@
                   <option value="XML">XML</option>
                   <option value="JSON">JSON</option>
                   <option value="RDF">RDF</option>
-                  <!-- Resto del grupo: XLS, CSV... -->
+                  <option value="CSV">CSV</option>
+                  <!-- Resto del grupo: XLS... -->
                 </select>
               </td>
             </tr>
